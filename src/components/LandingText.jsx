@@ -1,15 +1,17 @@
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import Letter from "./Letter";
+import gsap from "gsap";
 
 export default function LandingText() {
   const textRef = useRef(null);
 
   useEffect(() => {
     const el = textRef.current;
-    const chars = el.querySelectorAll(".char");
+
+    // 초기 등장 애니메이션
 
     gsap.fromTo(
-      chars,
+      el,
       { y: 60, opacity: 0 },
       {
         y: 0,
@@ -25,12 +27,10 @@ export default function LandingText() {
     <div className="flex justify-center items-center h-screen bg-[#bfb1a8]">
       <h1
         ref={textRef}
-        className="text-6xl font-bold text-white overflow-hidden"
+        className="text-6xl font-main text-white overflow-hidden tracking-widest"
       >
         {"STUDIO OLIMPO".split("").map((c, i) => (
-          <span key={i} className="char inline-block">
-            {c}
-          </span>
+          <Letter text={c} />
         ))}
       </h1>
     </div>

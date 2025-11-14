@@ -1,1 +1,10 @@
+@font-face {
+  font-family: Main;
+  src: url("/fonts/main.ttf");
+}
+
 @import "tailwindcss";
+
+@theme {
+  --font-main: Main, "sans-serif";
+}
