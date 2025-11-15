@@ -9,7 +9,6 @@ export default function LandingText() {
     const el = textRef.current;
 
     // 초기 등장 애니메이션
-
     gsap.fromTo(
       el,
       { y: 60, opacity: 0 },
@@ -29,7 +28,7 @@ export default function LandingText() {
         ref={textRef}
         className="text-6xl font-main text-white overflow-hidden tracking-widest"
       >
-        {"STUDIO OLIMPO".split("").map((c, i) => (
+        {"STUDIOOLIMPO".split("").map((c, i) => (
           <Letter text={c} />
         ))}
       </h1>

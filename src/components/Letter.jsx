@@ -43,7 +43,7 @@ const Letter = ({ text }) => {
     };
 
     // 글자 등장 후 1초 뒤 텍스트 전환 시작
-    setTimeout(changeText, 1000);
+    changeText();
   }, []);
 
   return (

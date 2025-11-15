@@ -1,9 +1,12 @@
+import FiberContainer from "./components/FiberContainer";
 import LandingText from "./components/LandingText";
+import LoadingPage from "./components/LoadingPage";
 
 function App() {
   return (
     <>
-      <LandingText />
+      <LoadingPage />
+      <FiberContainer />
     </>
   );
 }
