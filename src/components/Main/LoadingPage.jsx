@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useProgress } from "@react-three/drei";
 import LoadingNumber from "./LoadingNumber";
+import LandingText from "./LandingText";
 
 const LoadingPage = () => {
   const { progress } = useProgress(); // 목표값
@@ -25,6 +26,7 @@ const LoadingPage = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-[#bfb1a8]">
       <LoadingNumber number={number} />
+      <LandingText />
     </div>
   );
 };

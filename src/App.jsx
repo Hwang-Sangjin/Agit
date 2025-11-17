@@ -1,14 +1,36 @@
-import FiberContainer from "./components/FiberContainer";
-import LandingText from "./components/LandingText";
-import LoadingPage from "./components/LoadingPage";
+import { Routes, Route } from "react-router-dom";
 
-function App() {
+import MainPage from "./components/Main/MainPage";
+import Layout from "./Layout";
+import { useLoadingStore } from "./store/loadingState";
+import LoadingPage from "./components/Main/LoadingPage";
+
+export default function App() {
+  const isLoading = useLoadingStore((state) => state.isLoading);
+
   return (
     <>
-      <LoadingPage />
-      <FiberContainer />
+      {isLoading ? (
+        <LoadingPage />
+      ) : (
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<MainPage />} />
+            <Route path="about" element={<div>About Page</div>} />
+            <Route path="contact" element={<div>Contact Page</div>} />
+          </Route>
+        </Routes>
+      )}
     </>
   );
 }
 
-export default App;
+{
+  /* <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<MainPage />} />
+        <Route path="about" element={<div>About Page</div>} />
+        <Route path="contact" element={<div>Contact Page</div>} />
+      </Route>
+    </Routes> */
+}
