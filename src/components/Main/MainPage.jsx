@@ -1,11 +1,7 @@
 import FiberContainer from "./FiberContainer";
 
 function MainPage() {
-  return (
-    <>
-      <FiberContainer />
-    </>
-  );
+  return <>{/* <FiberContainer /> */}</>;
 }
 
 export default MainPage;

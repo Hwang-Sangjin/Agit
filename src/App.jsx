@@ -1,36 +1,21 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
-import MainPage from "./components/Main/MainPage";
 import Layout from "./Layout";
-import { useLoadingStore } from "./store/loadingState";
-import LoadingPage from "./components/Main/LoadingPage";
+import MainPage from "./components/Main/MainPage";
 
 export default function App() {
-  const isLoading = useLoadingStore((state) => state.isLoading);
+  const location = useLocation();
 
   return (
-    <>
-      {isLoading ? (
-        <LoadingPage />
-      ) : (
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<MainPage />} />
-            <Route path="about" element={<div>About Page</div>} />
-            <Route path="contact" element={<div>Contact Page</div>} />
-          </Route>
-        </Routes>
-      )}
-    </>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route element={<Layout />}>
+          <Route index element={<MainPage />} />
+          <Route path="about" element={<div>About Page</div>} />
+          <Route path="contact" element={<div>Contact Page</div>} />
+        </Route>
+      </Routes>
+    </AnimatePresence>
   );
-}
-
-{
-  /* <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<MainPage />} />
-        <Route path="about" element={<div>About Page</div>} />
-        <Route path="contact" element={<div>Contact Page</div>} />
-      </Route>
-    </Routes> */
 }

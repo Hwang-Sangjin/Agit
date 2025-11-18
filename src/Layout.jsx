@@ -1,10 +1,10 @@
-// src/Layout.jsx
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
+import Curve from "./components/Curve";
 
 export default function Layout() {
   return (
-    <div style={{ padding: 20 }}>
-      <header>
+    <Curve backgroundColor="black">
+      <header className="p-5">
         <h1>My Website</h1>
         <nav>
           <Link to="/">Main</Link> | <Link to="/about">About</Link> |{" "}
@@ -12,14 +12,11 @@ export default function Layout() {
         </nav>
       </header>
 
-      <hr />
-
-      <main style={{ padding: 20 }}>
-        {/* 여기만 페이지마다 바뀌는 영역 */}
+      <main className="p-5 relative">
         <Outlet />
       </main>
 
-      <footer>© 2025</footer>
-    </div>
+      <footer className="p-5">© 2025</footer>
+    </Curve>
   );
 }
