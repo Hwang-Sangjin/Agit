@@ -24,7 +24,7 @@ const LoadingPage = () => {
   // progress가 변할 때마다 새 인터벌 시작
 
   return (
-    <div className="flex justify-center items-center h-screen bg-[#bfb1a8]">
+    <div className="flex justify-center items-center h-screen bg-bright">
       <LoadingNumber number={number} />
       <LandingText />
     </div>

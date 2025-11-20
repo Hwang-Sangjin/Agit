@@ -6,5 +6,11 @@
 @import "tailwindcss";
 
 @theme {
+  --color-primary: #6b4f3a;
+  --color-dark: #363635;
+  --color-bright: #f4eee2;
+}
+
+@theme {
   --font-main: Main, "sans-serif";
 }

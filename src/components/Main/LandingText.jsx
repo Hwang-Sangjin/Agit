@@ -32,7 +32,7 @@ export default function LandingText() {
       {isLoading ? null : (
         <h1
           ref={textRef}
-          className="text-6xl font-main  text-white overflow-hidden "
+          className="text-6xl font-main  text-dark overflow-hidden "
         >
           {"MAIN".split("").map((c, i) => (
             <Letter text={c} />
