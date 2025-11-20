@@ -11,10 +11,7 @@ const LoadingPage = () => {
     const interval = setInterval(() => {
       setNumber((prev) => {
         // 목표(progress)까지 도달하면 멈춤
-        if (prev >= Math.floor(progress)) {
-          return prev;
-        }
-        return prev + 1;
+        return Math.floor(progress);
       });
     }, 30); // 30ms = 더 부드러운 카운트 (원하면 100ms로 바꿔도 됨)
 

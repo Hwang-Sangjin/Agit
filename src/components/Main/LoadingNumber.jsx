@@ -39,21 +39,25 @@ const LoadingNumber = ({ number }) => {
   }, [number]);
 
   return (
-    <h1 className="text-8xl font-main text-dark flex items-center">
-      <span
-        ref={numberRef}
-        className="inline-flex w-[3ch] justify-end overflow-hidden"
-      >
-        {digits.map((digit, i) => (
-          <span key={i} className="char inline-block">
-            {digit}
+    <>
+      {isLoading ? (
+        <h1 className="text-8xl font-main text-dark flex items-center">
+          <span
+            ref={numberRef}
+            className="inline-flex w-[3ch] justify-end overflow-hidden"
+          >
+            {digits.map((digit, i) => (
+              <span key={i} className="char inline-block">
+                {digit}
+              </span>
+            ))}
           </span>
-        ))}
-      </span>
-      <span ref={percentRef} className="inline-block">
-        %
-      </span>
-    </h1>
+          <span ref={percentRef} className="inline-block">
+            %
+          </span>
+        </h1>
+      ) : null}
+    </>
   );
 };
 

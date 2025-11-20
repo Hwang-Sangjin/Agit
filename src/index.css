@@ -1,6 +1,11 @@
 @font-face {
   font-family: Main;
-  src: url("/fonts/main.ttf");
+  src: url("/fonts/Main.ttf");
+}
+
+@font-face {
+  font-family: Loading;
+  src: url("/fonts/Loading.ttf");
 }
 
 @import "tailwindcss";
@@ -13,4 +18,5 @@
 
 @theme {
   --font-main: Main, "sans-serif";
+  --font-loading: Loading, "sans-serif";
 }
