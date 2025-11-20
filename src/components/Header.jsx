@@ -1,12 +1,15 @@
-import { useEffect, useRef } from "react";
-import Letter from "./Letter";
+import React, { useEffect, useRef } from "react";
+import { useLoadingStore } from "../store/loadingState";
 import gsap from "gsap";
-import { useLoadingStore } from "../../store/loadingState";
 
-export default function LandingText() {
+const Header = () => {
   const textRef = useRef(null);
 
   const isLoading = useLoadingStore((state) => state.isLoading);
+
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
     const el = textRef.current;
@@ -14,7 +17,7 @@ export default function LandingText() {
     if (isLoading === false) {
       gsap.fromTo(
         el,
-        { y: 60, opacity: 0 },
+        { y: -60, opacity: 0 },
         {
           y: 0,
           opacity: 1,
@@ -31,12 +34,12 @@ export default function LandingText() {
     <>
       <h1
         ref={textRef}
-        className="text-6xl font-main  text-dark overflow-hidden "
+        className="text-xl font-header  text-dark overflow-hidden "
       >
-        {"MAIN".split("").map((c, i) => (
-          <Letter text={c} />
-        ))}
+        Header
       </h1>
     </>
   );
-}
+};
+
+export default Header;

@@ -41,7 +41,7 @@ const LoadingNumber = ({ number }) => {
   return (
     <>
       {isLoading ? (
-        <h1 className="text-8xl font-main text-dark flex items-center">
+        <h1 className="text-8xl font-main text-dark flex h-screen w-screen justify-center items-center">
           <span
             ref={numberRef}
             className="inline-flex w-[3ch] justify-end overflow-hidden"

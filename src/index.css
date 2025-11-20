@@ -7,6 +7,10 @@
   font-family: Loading;
   src: url("/fonts/Loading.ttf");
 }
+@font-face {
+  font-family: Header;
+  src: url("/fonts/Header.ttf");
+}
 
 @import "tailwindcss";
 
@@ -19,4 +23,5 @@
 @theme {
   --font-main: Main, "sans-serif";
   --font-loading: Loading, "sans-serif";
+  --font-header: Header, "sans-serif";
 }

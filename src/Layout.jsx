@@ -10,7 +10,7 @@ export default function Layout() {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
   return (
-    <div className="relative min-h-screen bg-[#bfb1a8]">
+    <div className="relative min-h-screen bg-bright">
       {/* Header
       <header className="p-4">
         <h1>My Website</h1>
@@ -20,12 +20,14 @@ export default function Layout() {
         </nav>
       </header>
 
-      <main className="p-4 relative z-10">
-        <Outlet />
-      </main>
+     
 
       <footer className="p-4">© 2025</footer> */}
       <Curve />
+
+      <main className="p-4  z-10">
+        <Outlet />
+      </main>
     </div>
   );
 }
