@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Letter from "./Letter";
 import gsap from "gsap";
 import { useLoadingStore } from "../../store/loadingState";
@@ -7,6 +7,21 @@ export default function LandingText() {
   const textRef = useRef(null);
 
   const isLoading = useLoadingStore((state) => state.isLoading);
+
+  const [section, setSection] = useState(window.location.hash || "#section1");
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setSection(window.location.hash || "#section1");
+    };
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    console.log(section);
+  }, [section]);
 
   useEffect(() => {
     const el = textRef.current;
@@ -33,9 +48,27 @@ export default function LandingText() {
         ref={textRef}
         className="text-6xl font-main  text-dark overflow-hidden "
       >
-        {"MAIN".split("").map((c, i) => (
-          <Letter text={c} />
-        ))}
+        {section === "#main" && (
+          <>
+            {"MAIN".split("").map((c, i) => (
+              <Letter text={c} />
+            ))}
+          </>
+        )}
+        {section === "#about" && (
+          <>
+            {"ABOUT".split("").map((c, i) => (
+              <Letter text={c} />
+            ))}
+          </>
+        )}
+        {section === "#contact" && (
+          <>
+            {"CONTACT".split("").map((c, i) => (
+              <Letter text={c} />
+            ))}
+          </>
+        )}
       </h1>
     </>
   );

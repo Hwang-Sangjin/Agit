@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLoadingStore } from "../store/loadingState";
 import gsap from "gsap";
 
@@ -6,6 +6,17 @@ const Header = () => {
   const textRef = useRef(null);
 
   const isLoading = useLoadingStore((state) => state.isLoading);
+
+  const [section, setSection] = useState(window.location.hash || "#section1");
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setSection(window.location.hash || "#section1");
+    };
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   useEffect(() => {
     console.log(isLoading);
@@ -34,9 +45,17 @@ const Header = () => {
     <>
       <h1
         ref={textRef}
-        className="text-xl font-header  text-dark overflow-hidden "
+        className="flex flex-row text-xl font-header  text-dark overflow-hidden "
       >
-        Header
+        <div className="m-5" onClick={() => (window.location.hash = "main")}>
+          main
+        </div>
+        <div className="m-5" onClick={() => (window.location.hash = "about")}>
+          about
+        </div>
+        <div className="m-5" onClick={() => (window.location.hash = "contact")}>
+          contact
+        </div>
       </h1>
     </>
   );
