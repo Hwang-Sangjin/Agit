@@ -8,7 +8,7 @@ export default function LandingText() {
 
   const isLoading = useLoadingStore((state) => state.isLoading);
 
-  const [section, setSection] = useState(window.location.hash || "#section1");
+  const [section, setSection] = useState(window.location.hash || "");
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -18,10 +18,6 @@ export default function LandingText() {
 
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
-
-  useEffect(() => {
-    console.log(section);
-  }, [section]);
 
   useEffect(() => {
     const el = textRef.current;
@@ -48,7 +44,7 @@ export default function LandingText() {
         ref={textRef}
         className="text-6xl font-main  text-dark overflow-hidden "
       >
-        {section === "#main" && (
+        {(section === "#main" || section === "") && (
           <>
             {"MAIN".split("").map((c, i) => (
               <Letter text={c} />

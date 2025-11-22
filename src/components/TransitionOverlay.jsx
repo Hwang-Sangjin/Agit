@@ -1,16 +1,30 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const TransitionOverlay = ({ trigger }) => {
-  const overlayRef = useRef(null);
+  const svgRef = useRef(null);
+  const pathRef = useRef(null); // path용 ref
+  const [dims, setDims] = useState({ width: 0, height: 0 });
+
+  // 화면 크기 계산
+  useEffect(() => {
+    const update = () =>
+      setDims({ width: window.innerWidth, height: window.innerHeight });
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   useEffect(() => {
     if (!trigger) return;
 
-    const el = overlayRef.current;
+    const el = svgRef.current;
+    if (!el) return;
 
-    // 타임라인 생성
     const tl = gsap.timeline();
+
+    // 초기값을 아래로
+    gsap.set(el, { y: "100%" });
 
     tl.to(el, {
       y: "0%",
@@ -26,11 +40,26 @@ const TransitionOverlay = ({ trigger }) => {
       .set(el, { y: "100%" });
   }, [trigger]);
 
+  const { width, height } = dims;
+
+  const curveHeight = 100; // 곡선 높이
+  const pathData = `
+  M0,${curveHeight} 
+  C ${width / 4},0 ${(3 * width) / 4},0 ${width},${curveHeight}
+  L ${width},${height}
+  L 0,${height}
+  Z
+`;
+
   return (
-    <div
-      ref={overlayRef}
-      className="fixed left-0 top-0 w-full h-full bg-black z-[999] translate-y-full"
-    ></div>
+    <svg
+      ref={svgRef}
+      width={width}
+      height={height}
+      className="fixed left-0 top-0 z-[999] translate-y-full pointer-events-none"
+    >
+      <path ref={pathRef} d={pathData} fill="var(--primary-color, #000)" />
+    </svg>
   );
 };
 
