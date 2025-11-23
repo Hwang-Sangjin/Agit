@@ -47,7 +47,7 @@ const Letter = ({ text }) => {
   }, []);
 
   return (
-    <div ref={textRef} className="font-main inline-block">
+    <div ref={textRef} className="font-main inline-block text-5xl">
       {text}
     </div>
   );

@@ -3,10 +3,9 @@ import gsap from "gsap";
 
 const TransitionOverlay = ({ trigger }) => {
   const svgRef = useRef(null);
-  const pathRef = useRef(null); // path용 ref
   const [dims, setDims] = useState({ width: 0, height: 0 });
 
-  // 화면 크기 계산
+  // 화면 크기 계산 (SVG는 width/height 필요)
   useEffect(() => {
     const update = () =>
       setDims({ width: window.innerWidth, height: window.innerHeight });
@@ -23,7 +22,7 @@ const TransitionOverlay = ({ trigger }) => {
 
     const tl = gsap.timeline();
 
-    // 초기값을 아래로
+    // 초기값을 항상 아래에 두기
     gsap.set(el, { y: "100%" });
 
     tl.to(el, {
@@ -42,15 +41,6 @@ const TransitionOverlay = ({ trigger }) => {
 
   const { width, height } = dims;
 
-  const curveHeight = 100; // 곡선 높이
-  const pathData = `
-  M0,${curveHeight} 
-  C ${width / 4},0 ${(3 * width) / 4},0 ${width},${curveHeight}
-  L ${width},${height}
-  L 0,${height}
-  Z
-`;
-
   return (
     <svg
       ref={svgRef}
@@ -58,7 +48,8 @@ const TransitionOverlay = ({ trigger }) => {
       height={height}
       className="fixed left-0 top-0 z-[999] translate-y-full pointer-events-none"
     >
-      <path ref={pathRef} d={pathData} fill="var(--primary-color, #000)" />
+      {/* 현재는 커브 없이 전체 사각형 하나 */}
+      <rect width={width} height={height} fill="var(--primary-color, #000)" />
     </svg>
   );
 };
