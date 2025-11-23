@@ -24,7 +24,7 @@ function MainPage() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-bright relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-bright relative">
       <TransitionOverlay trigger={trigger} />
       <Header className="flex flex-row" />
       <div>
