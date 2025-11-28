@@ -1,16 +1,26 @@
 import React from "react";
 import Letter from "../components/Main/Letter";
-import MainPart1 from "../components/Main/MainPart1";
+import Hero from "../components/Sections/Hero";
+import ServiceSummary from "../components/Sections/ServiceSummary";
+import Services from "../components/Sections/Services";
+import About from "../components/Sections/About";
+import Works from "../components/Sections/Works";
+import ContactSummary from "../components/Sections/ContactSummary";
+import Contact from "../components/Sections/Contact";
 
 const Main = () => {
   return (
     <div>
-      <div className="w-full h-screen ">
-        <MainPart1 />
-      </div>
-      <div className="w-full h-screen bg-amber-100">part2</div>
-      <div className="w-full h-screen bg-amber-200">part3</div>
-      <div className="w-full h-screen bg-amber-300">part4</div>
+      {"MAIN".split("").map((c, i) => (
+        <Letter text={c} />
+      ))}
+      <Hero />
+      <ServiceSummary />
+      <Services />
+      <About />
+      <Works />
+      <ContactSummary />
+      <Contact />
     </div>
   );
 };

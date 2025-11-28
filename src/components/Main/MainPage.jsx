@@ -8,6 +8,8 @@ import Letter from "./Letter";
 import Main from "../../pages/Main";
 import About from "../../pages/About";
 import Contact from "../../pages/Contact";
+import Navbar from "../Navbar";
+import BackgroundScene from "../Background/BackgroundScene";
 
 function MainPage() {
   const trigger = useTransitionStore((state) => state.trigger);
@@ -26,7 +28,8 @@ function MainPage() {
   return (
     <div className="flex flex-col min-h-screen bg-bright relative">
       <TransitionOverlay trigger={trigger} />
-      <Header className="flex flex-row" />
+      <BackgroundScene />
+      <Header />
       <div>
         {(section === "#main" || section === "") && (
           <>
