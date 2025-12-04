@@ -102,7 +102,7 @@ const fragmentShader = `
   }
 `;
 
-const TransitionPlane = ({ trigger, color = "#f4eee2" }) => {
+const TransitionPlane = ({ trigger, color = "#faf7f2" }) => {
   const materialRef = useRef(null);
   const { viewport, size } = useThree(); // size에서 픽셀 해상도 가져옴
 
