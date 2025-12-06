@@ -3,17 +3,32 @@ import FiberContainer from "./FiberContainer";
 import LandingText from "./LandingText";
 import TransitionOverlay from "../TransitionOverlay";
 import { useTransitionStore } from "../../store/transitionState";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Letter from "./Letter";
 import Main from "../../pages/Main";
 import About from "../../pages/About";
 import Contact from "../../pages/Contact";
 import { Canvas } from "@react-three/fiber";
+import * as THREE from "three";
 
 function MainPage() {
   const trigger = useTransitionStore((state) => state.trigger);
 
+  const canvasRef = useRef(null);
+  const raycaster = useRef(new THREE.Raycaster());
+  const interactivePlane = useRef(null);
+  const [context, setContext] = useState(null);
+  const [screenCursor, setScreenCursor] = useState(
+    new THREE.Vector2(9999, 9999)
+  );
+
   const [section, setSection] = useState(window.location.hash || "");
+
+  const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    pixelRatio: Math.min(window.devicePixelRatio, 2),
+  };
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -21,14 +36,27 @@ function MainPage() {
     };
     window.addEventListener("hashchange", handleHashChange);
 
+    setContext(canvasRef.current.getContext("2d"));
+
+    window.addEventListener("pointermove", (event) => {
+      setScreenCursor(
+        new THREE.Vector2(
+          (event.clientX / sizes.width) * 2 - 1,
+          -(event.clientY / sizes.height) * 2 + 1
+        )
+      );
+    });
+
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
+  useEffect(() => {
+    if (!context) return;
+    context.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+  }, [context]);
+
   return (
     <div className="flex flex-col min-h-screen bg-bright relative">
-      {/* z-index는 높게 유지하되, 
-         Canvas가 클릭을 가로채지 않도록 events={null}과 pointer-events-none을 설정합니다.
-      */}
       <div className="absolute top-0 left-0 w-full h-full z-50 pointer-events-none">
         <Canvas
           events={null} // 1. R3F 이벤트 시스템 비활성화 (필수)
@@ -39,6 +67,11 @@ function MainPage() {
           <TransitionOverlay trigger={trigger} />
         </Canvas>
       </div>
+
+      <canvas
+        ref={canvasRef}
+        className="absolute top-0 left-0 w-full h-full z-50 pointer-events-none"
+      ></canvas>
 
       <Header />
 

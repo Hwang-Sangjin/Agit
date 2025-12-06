@@ -25,3 +25,15 @@
   --font-loading: Loading, "sans-serif";
   --font-header: Header, "sans-serif";
 }
+
+.marauder-footprint {
+  /* 잉크가 종이에 살짝 번진 느낌을 주기 위해 미세한 블러 처리 */
+  filter: blur(1px);
+  /* (선택사항) 약간 투명도를 주어 종이 질감이 비치게 함 */
+  opacity: 0.9;
+
+  /* 나중에 회전 및 위치 이동을 위해 필요한 설정 */
+  position: absolute;
+  pointer-events: none; /* 발자국이 마우스 클릭을 방해하지 않도록 설정 */
+  transform-origin: center center; /* 회전의 중심점 */
+}

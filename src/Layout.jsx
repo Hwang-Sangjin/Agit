@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import PixelTransition from "./components/Transition/PixelTransition";
-import BackgroundScene from "./components/Background/BackgroundScene";
+
 import Curve from "./components/Curve";
 import LoadingPage from "./components/Main/LoadingPage";
 import { useLoadingStore } from "./store/loadingState";
@@ -12,7 +12,6 @@ export default function Layout() {
 
   return (
     <div className="relative min-h-screen bg-bright">
-      <BackgroundScene />
       {/* Header
       <header className="p-4">
         <h1>My Website</h1>
