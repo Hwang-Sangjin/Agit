@@ -6,11 +6,12 @@ import MainPage from "./components/Main/MainPage";
 import LoadingPage from "./components/Main/LoadingPage";
 import { useLoadingStore } from "./store/loadingState";
 import LandingText from "./components/Main/LandingText";
+import Main from "./pages/Main";
 
 export default function App() {
   const location = useLocation();
 
   const isLoading = useLoadingStore((state) => state.isLoading);
 
-  return <>{isLoading ? <LoadingPage /> : <MainPage />}</>;
+  return <MainPage />;
 }
