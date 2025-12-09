@@ -58,7 +58,7 @@ const Header = () => {
     <>
       <h1
         ref={textRef}
-        className="flex flex-row text-xl font-header  text-dark overflow-hidden "
+        className="flex flex-row text-3xl font-header font-header  text-dark overflow-hidden "
       >
         <div className="m-5" onClick={() => onClickHeader("main")}>
           main

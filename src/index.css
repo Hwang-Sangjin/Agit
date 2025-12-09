@@ -37,3 +37,7 @@
   pointer-events: none; /* 발자국이 마우스 클릭을 방해하지 않도록 설정 */
   transform-origin: center center; /* 회전의 중심점 */
 }
+
+body {
+  cursor: none;
+}
