@@ -5,11 +5,9 @@ import { Room } from "./Room";
 
 const FiberContainer = () => {
   return (
-    <Canvas>
-      <Suspense fallback={null}>
-        <Room />
-      </Suspense>
-    </Canvas>
+    <Suspense fallback={null}>
+      <Room />
+    </Suspense>
   );
 };
 

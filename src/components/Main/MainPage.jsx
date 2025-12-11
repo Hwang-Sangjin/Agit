@@ -1,24 +1,17 @@
-import Header from "../Header";
-import TransitionOverlay from "../TransitionOverlay";
-import { useTransitionStore } from "../../store/transitionState";
 import { useEffect, useRef, useState } from "react";
-import Main from "../../pages/Main";
-import About from "../../pages/About";
-import Contact from "../../pages/Contact";
 import { Canvas } from "@react-three/fiber";
+import { useProgress } from "@react-three/drei";
+
+import TransitionOverlay from "../TransitionOverlay";
+import FiberContainer from "./FiberContainer";
+import StaticPaperBackground from "./StaticPaperBackground";
 
 // 발자국 SVG 컴포넌트
 const Footprint = ({ isLeft, angle = 0, className = "" }) => {
-  const footRotation = isLeft ? -5 : 5; // 왼발/오른발 기본 각도
-  const offsetDistance = 10; // offset 거리
-
-  // 이동 방향 각도 + 발자국 기본 각도
+  const footRotation = isLeft ? -5 : 5;
+  const offsetDistance = 10;
   const totalRotation = angle + footRotation;
-
-  // 진행 방향에 수직으로 offset 계산
-  // angle은 이미 90도가 더해진 상태이므로, 원래 진행 방향은 angle - 90
-  const movementAngle = angle - 90; // 실제 이동 방향
-  // 이동 방향에 수직: 왼발은 왼쪽으로(-90도), 오른발은 오른쪽으로(+90도)
+  const movementAngle = angle - 90;
   const offsetAngle = isLeft ? movementAngle - 90 : movementAngle + 90;
   const offsetX = Math.cos((offsetAngle * Math.PI) / 180) * offsetDistance;
   const offsetY = Math.sin((offsetAngle * Math.PI) / 180) * offsetDistance;
@@ -48,52 +41,182 @@ const Footprint = ({ isLeft, angle = 0, className = "" }) => {
   );
 };
 
-function MainPage() {
-  const trigger = useTransitionStore((state) => state.trigger);
+// 로딩 페이지 컴포넌트
+const LoadingNumber = ({ number }) => (
+  <div className="flex items-center justify-center w-full h-full">
+    <div className="text-center">
+      <div className="text-9xl font-bold mb-4">{number}%</div>
+      <div className="text-2xl">Loading...</div>
+    </div>
+  </div>
+);
 
-  // Fade out 효과를 위한 state
-  const [footprints, setFootprints] = useState([]);
-  const nextFootprintIdRef = useRef(0);
-  const isLeftFootRef = useRef(true); // 왼발/오른발 토글
-  const lastFootprintPosRef = useRef({ x: 0, y: 0 });
-  const [currentAngle, setCurrentAngle] = useState(0); // 현재 이동 방향 각도
-
-  const [section, setSection] = useState(window.location.hash || "");
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-
-  const FOOTPRINT_DISTANCE = 60; // 발자국 찍을 거리 (픽셀)
+const LoadingPage = ({ onLoadComplete }) => {
+  const { progress } = useProgress();
+  const [number, setNumber] = useState(0);
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   useEffect(() => {
-    // Hash change listener
+    const interval = setInterval(() => {
+      setNumber((prev) => {
+        const target = Math.floor(progress);
+        if (target >= prev) {
+          return target;
+        }
+        return prev;
+      });
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [progress]);
+
+  useEffect(() => {
+    if (number >= 100 && !hasCompleted) {
+      setHasCompleted(true);
+      setTimeout(() => {
+        onLoadComplete();
+      }, 1000);
+    }
+  }, [number, hasCompleted, onLoadComplete]);
+
+  return (
+    <div className="flex h-screen relative z-20">
+      <LoadingNumber number={number} />
+    </div>
+  );
+};
+
+// 데모용 페이지 컴포넌트들
+const MainContent = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-center">
+      <h1 className="text-6xl font-bold mb-4">Main</h1>
+      <p className="text-xl">메인 페이지입니다</p>
+    </div>
+  </div>
+);
+
+const AboutContent = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-center">
+      <h1 className="text-6xl font-bold mb-4">About</h1>
+      <p className="text-xl">소개 페이지입니다</p>
+    </div>
+  </div>
+);
+
+const ContactContent = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-center">
+      <h1 className="text-6xl font-bold mb-4">Contact</h1>
+      <p className="text-xl">연락처 페이지입니다</p>
+    </div>
+  </div>
+);
+
+function MainPage() {
+  // 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(true);
+  const [showMainPage, setShowMainPage] = useState(false);
+
+  // 트리거 state
+  const [trigger, setTrigger] = useState(false);
+
+  const [footprints, setFootprints] = useState([]);
+  const nextFootprintIdRef = useRef(0);
+  const isLeftFootRef = useRef(true);
+  const lastFootprintPosRef = useRef({ x: 0, y: 0 });
+  const [currentAngle, setCurrentAngle] = useState(0);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+
+  // 현재 표시할 섹션
+  const [currentSection, setCurrentSection] = useState("#main");
+  const [nextSection, setNextSection] = useState("#main");
+  const isTransitioningRef = useRef(false);
+
+  const FOOTPRINT_DISTANCE = 60;
+
+  // 로딩 완료 핸들러
+  const handleLoadComplete = () => {
+    setTrigger(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowMainPage(true);
+    }, 1500);
+
+    setTimeout(() => {
+      setTrigger(false);
+    }, 3200);
+  };
+
+  // 섹션에 따른 컴포넌트 렌더링
+  const renderSection = (section) => {
+    switch (section) {
+      case "#about":
+        return <AboutContent />;
+      case "#contact":
+        return <ContactContent />;
+      case "#main":
+      default:
+        return <MainContent />;
+    }
+  };
+
+  useEffect(() => {
+    if (isLoading || !showMainPage) return;
+
+    const initialHash = window.location.hash || "#main";
+    setCurrentSection(initialHash);
+    setNextSection(initialHash);
+
     const handleHashChange = () => {
-      setSection(window.location.hash || "#main");
+      if (isTransitioningRef.current) return;
+
+      const newHash = window.location.hash || "#main";
+      if (newHash === currentSection) return;
+
+      isTransitioningRef.current = true;
+      setNextSection(newHash);
+      setTrigger(true);
+
+      setTimeout(() => {
+        setCurrentSection(newHash);
+      }, 1500);
+
+      setTimeout(() => {
+        setTrigger(false);
+        isTransitioningRef.current = false;
+      }, 3200);
     };
+
     window.addEventListener("hashchange", handleHashChange);
 
-    // Pointer move listener with footprint trail
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [currentSection, isLoading, showMainPage]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
     const handlePointerMove = (event) => {
       const x = event.clientX;
       const y = event.clientY;
-
-      // 현재 커서 위치 업데이트
       setCursorPos({ x, y });
 
-      // 이전 발자국과의 거리 계산
       const dx = x - lastFootprintPosRef.current.x;
       const dy = y - lastFootprintPosRef.current.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // 일정 거리 이상 움직였을 때만 발자국 생성
       if (distance >= FOOTPRINT_DISTANCE) {
-        // 이전 발자국 위치 → 현재 위치 방향 계산 (라디안 -> 도)
-        // Math.atan2는 y축이 아래로 증가하는 화면 좌표계 기준
         const angle =
           Math.atan2(
             y - lastFootprintPosRef.current.y,
             x - lastFootprintPosRef.current.x
           ) *
             (180 / Math.PI) +
-          90; // 90도 추가
+          90;
 
         setCurrentAngle(angle);
 
@@ -103,19 +226,14 @@ function MainPage() {
           x: x,
           y: y,
           isLeft: isLeftFootRef.current,
-          angle: angle, // 이전 발자국 → 현재 발자국 방향
+          angle: angle,
           fadeOut: false,
         };
 
         setFootprints((prev) => [...prev, newFootprint]);
-
-        // 왼발/오른발 토글
         isLeftFootRef.current = !isLeftFootRef.current;
-
-        // 마지막 발자국 위치 업데이트
         lastFootprintPosRef.current = { x, y };
 
-        // Start fade out after 100ms
         setTimeout(() => {
           setFootprints((prev) =>
             prev.map((footprint) =>
@@ -126,7 +244,6 @@ function MainPage() {
           );
         }, 100);
 
-        // Remove after 1500ms (더 오래 보이도록)
         setTimeout(() => {
           setFootprints((prev) =>
             prev.filter((footprint) => footprint.id !== footprintId)
@@ -138,65 +255,116 @@ function MainPage() {
     window.addEventListener("pointermove", handlePointerMove);
 
     return () => {
-      window.removeEventListener("hashchange", handleHashChange);
       window.removeEventListener("pointermove", handlePointerMove);
     };
-  }, []);
+  }, [isLoading]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-bright relative cursor-none">
-      {/* Three.js Canvas for transitions */}
+    <div className="flex flex-col min-h-screen relative cursor-none bg-[#f5ebd7]">
+      {/* Navigation - 로딩 중에는 숨김, old paper 배경 */}
+      {!isLoading && (
+        <nav className="fixed top-0 left-0 right-0 z-30 p-6 flex gap-6">
+          {/* Navigation 배경용 Canvas */}
+          <div className="absolute inset-0 -z-10">
+            <Canvas
+              camera={{ position: [0, 0, 5], fov: 75 }}
+              gl={{ alpha: false }}
+              style={{ width: "100%", height: "100%" }}
+            >
+              <StaticPaperBackground color="#f5ebd7" />
+            </Canvas>
+          </div>
+
+          <a
+            href="#main"
+            className="text-lg font-semibold hover:text-blue-600 relative z-10"
+          >
+            Main
+          </a>
+          <a
+            href="#about"
+            className="text-lg font-semibold hover:text-blue-600 relative z-10"
+          >
+            About
+          </a>
+          <a
+            href="#contact"
+            className="text-lg font-semibold hover:text-blue-600 relative z-10"
+          >
+            Contact
+          </a>
+        </nav>
+      )}
+
+      {/* 배경 전용 Canvas - 항상 표시 */}
+      <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none">
+        <Canvas camera={{ position: [0, 0, 5], fov: 75 }} gl={{ alpha: false }}>
+          <StaticPaperBackground color="#f5ebd7" />
+        </Canvas>
+      </div>
+
+      {/* Transition 전용 Canvas - 항상 마운트, 투명 */}
       <div className="absolute top-0 left-0 w-full h-full z-50 pointer-events-none">
         <Canvas
           events={null}
           className="pointer-events-none"
           style={{ pointerEvents: "none" }}
           gl={{ alpha: true }}
+          camera={{ position: [0, 0, 5], fov: 75 }}
         >
+          {/* 3D 컨텐츠 - 로딩 후에만 표시 */}
+          {!isLoading && <FiberContainer />}
+
+          {/* Transition - 항상 마운트 */}
           <TransitionOverlay trigger={trigger} />
         </Canvas>
       </div>
 
       {/* Footprint trails */}
-      {footprints.map((footprint) => (
+      {!trigger &&
+        !isLoading &&
+        footprints.map((footprint) => (
+          <div
+            key={footprint.id}
+            className={`fixed pointer-events-none z-40 transition-opacity duration-1000 ${
+              footprint.fadeOut ? "opacity-0" : "opacity-100"
+            }`}
+            style={{
+              left: footprint.x,
+              top: footprint.y,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Footprint isLeft={footprint.isLeft} angle={footprint.angle} />
+          </div>
+        ))}
+
+      {/* Current cursor */}
+      {!trigger && !isLoading && (
         <div
-          key={footprint.id}
-          className={`fixed pointer-events-none z-40 transition-opacity duration-1000 ${
-            footprint.fadeOut ? "opacity-0" : "opacity-100"
-          }`}
+          className="fixed pointer-events-none z-60"
           style={{
-            left: footprint.x,
-            top: footprint.y,
+            left: cursorPos.x,
+            top: cursorPos.y,
             transform: "translate(-50%, -50%)",
           }}
         >
-          <Footprint isLeft={footprint.isLeft} angle={footprint.angle} />
+          <Footprint
+            isLeft={isLeftFootRef.current}
+            angle={currentAngle}
+            className="opacity-50"
+          />
         </div>
-      ))}
+      )}
 
-      {/* Current cursor position - 발자국 모양 */}
-      <div
-        className="fixed pointer-events-none z-50"
-        style={{
-          left: cursorPos.x,
-          top: cursorPos.y,
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <Footprint
-          isLeft={isLeftFootRef.current}
-          angle={currentAngle}
-          className="opacity-50"
-        />
-      </div>
-
-      <Header />
-
-      <div>
-        {(section === "#main" || section === "") && <Main />}
-        {section === "#about" && <About />}
-        {section === "#contact" && <Contact />}
-      </div>
+      {/* Page Content */}
+      {isLoading ? (
+        <LoadingPage onLoadComplete={handleLoadComplete} />
+      ) : (
+        <main className="flex-1 relative z-10 pt-20">
+          {renderSection(currentSection)}
+        </main>
+      )}
     </div>
   );
 }
