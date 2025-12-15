@@ -5,6 +5,7 @@ import { useProgress } from "@react-three/drei";
 import TransitionOverlay from "../TransitionOverlay";
 import FiberContainer from "./FiberContainer";
 import StaticPaperBackground from "./StaticPaperBackground";
+import Header from "../Header";
 
 // 발자국 SVG 컴포넌트
 const Footprint = ({ isLeft, angle = 0, className = "" }) => {
@@ -86,6 +87,22 @@ const LoadingPage = ({ onLoadComplete }) => {
   );
 };
 
+// 인트로 화면 컴포넌트
+const IntroScreen = ({ onEnter }) => (
+  <div className="flex items-center justify-center h-screen relative z-20">
+    <div className="text-center">
+      <h1 className="text-7xl font-bold mb-6">Welcome</h1>
+      <p className="text-2xl mb-12">당신의 여정을 시작하세요</p>
+      <button
+        onClick={onEnter}
+        className="px-8 py-4 text-xl font-semibold bg-[#372116] text-[#f5ebd7] rounded-lg hover:bg-[#4a2c1f] transition-colors duration-300"
+      >
+        Enter
+      </button>
+    </div>
+  </div>
+);
+
 // 데모용 페이지 컴포넌트들
 const MainContent = () => (
   <div className="flex items-center justify-center h-full">
@@ -115,9 +132,8 @@ const ContactContent = () => (
 );
 
 function MainPage() {
-  // 로딩 상태 관리
-  const [isLoading, setIsLoading] = useState(true);
-  const [showMainPage, setShowMainPage] = useState(false);
+  // 화면 상태 관리
+  const [currentScreen, setCurrentScreen] = useState("loading"); // "loading", "intro", "main"
 
   // 트리거 state
   const [trigger, setTrigger] = useState(false);
@@ -131,18 +147,29 @@ function MainPage() {
 
   // 현재 표시할 섹션
   const [currentSection, setCurrentSection] = useState("#main");
-  const [nextSection, setNextSection] = useState("#main");
   const isTransitioningRef = useRef(false);
 
   const FOOTPRINT_DISTANCE = 60;
 
-  // 로딩 완료 핸들러
+  // 로딩 완료 핸들러 - 인트로 화면으로 이동
   const handleLoadComplete = () => {
     setTrigger(true);
 
     setTimeout(() => {
-      setIsLoading(false);
-      setShowMainPage(true);
+      setCurrentScreen("intro");
+    }, 1500);
+
+    setTimeout(() => {
+      setTrigger(false);
+    }, 3200);
+  };
+
+  // 인트로 Enter 버튼 핸들러 - 메인 페이지로 이동
+  const handleEnterMainPage = () => {
+    setTrigger(true);
+
+    setTimeout(() => {
+      setCurrentScreen("main");
     }, 1500);
 
     setTimeout(() => {
@@ -163,12 +190,12 @@ function MainPage() {
     }
   };
 
+  // 해시 변경 감지 (메인 페이지에서만)
   useEffect(() => {
-    if (isLoading || !showMainPage) return;
+    if (currentScreen !== "main") return;
 
     const initialHash = window.location.hash || "#main";
     setCurrentSection(initialHash);
-    setNextSection(initialHash);
 
     const handleHashChange = () => {
       if (isTransitioningRef.current) return;
@@ -177,7 +204,6 @@ function MainPage() {
       if (newHash === currentSection) return;
 
       isTransitioningRef.current = true;
-      setNextSection(newHash);
       setTrigger(true);
 
       setTimeout(() => {
@@ -195,16 +221,16 @@ function MainPage() {
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [currentSection, isLoading, showMainPage]);
+  }, [currentSection, currentScreen]);
 
+  // 마우스 커서 추적 - 모든 화면에서 작동
   useEffect(() => {
-    if (isLoading) return;
-
     const handlePointerMove = (event) => {
       const x = event.clientX;
       const y = event.clientY;
       setCursorPos({ x, y });
 
+      // 발자국 흔적 생성
       const dx = x - lastFootprintPosRef.current.x;
       const dy = y - lastFootprintPosRef.current.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
@@ -257,44 +283,12 @@ function MainPage() {
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
     };
-  }, [isLoading]);
+  }, [currentScreen]);
 
   return (
     <div className="flex flex-col min-h-screen relative cursor-none bg-[#f5ebd7]">
-      {/* Navigation - 로딩 중에는 숨김, old paper 배경 */}
-      {!isLoading && (
-        <nav className="fixed top-0 left-0 right-0 z-30 p-6 flex gap-6">
-          {/* Navigation 배경용 Canvas */}
-          <div className="absolute inset-0 -z-10">
-            <Canvas
-              camera={{ position: [0, 0, 5], fov: 75 }}
-              gl={{ alpha: false }}
-              style={{ width: "100%", height: "100%" }}
-            >
-              <StaticPaperBackground color="#f5ebd7" />
-            </Canvas>
-          </div>
-
-          <a
-            href="#main"
-            className="text-lg font-semibold hover:text-blue-600 relative z-10"
-          >
-            Main
-          </a>
-          <a
-            href="#about"
-            className="text-lg font-semibold hover:text-blue-600 relative z-10"
-          >
-            About
-          </a>
-          <a
-            href="#contact"
-            className="text-lg font-semibold hover:text-blue-600 relative z-10"
-          >
-            Contact
-          </a>
-        </nav>
-      )}
+      {/* Navigation - 메인 페이지에서만 표시 */}
+      {currentScreen === "main" && <Header />}
 
       {/* 배경 전용 Canvas - 항상 표시 */}
       <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none">
@@ -312,17 +306,16 @@ function MainPage() {
           gl={{ alpha: true }}
           camera={{ position: [0, 0, 5], fov: 75 }}
         >
-          {/* 3D 컨텐츠 - 로딩 후에만 표시 */}
-          {!isLoading && <FiberContainer />}
+          {/* 3D 컨텐츠 - 메인 페이지에서만 표시 */}
+          {currentScreen === "main" && <FiberContainer />}
 
           {/* Transition - 항상 마운트 */}
           <TransitionOverlay trigger={trigger} />
         </Canvas>
       </div>
 
-      {/* Footprint trails */}
+      {/* Footprint trails - 항상 표시 */}
       {!trigger &&
-        !isLoading &&
         footprints.map((footprint) => (
           <div
             key={footprint.id}
@@ -339,8 +332,8 @@ function MainPage() {
           </div>
         ))}
 
-      {/* Current cursor */}
-      {!trigger && !isLoading && (
+      {/* Current cursor - 항상 표시 */}
+      {!trigger && (
         <div
           className="fixed pointer-events-none z-60"
           style={{
@@ -358,9 +351,13 @@ function MainPage() {
       )}
 
       {/* Page Content */}
-      {isLoading ? (
+      {currentScreen === "loading" && (
         <LoadingPage onLoadComplete={handleLoadComplete} />
-      ) : (
+      )}
+      {currentScreen === "intro" && (
+        <IntroScreen onEnter={handleEnterMainPage} />
+      )}
+      {currentScreen === "main" && (
         <main className="flex-1 relative z-10 pt-20">
           {renderSection(currentSection)}
         </main>

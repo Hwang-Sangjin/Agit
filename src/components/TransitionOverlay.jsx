@@ -137,7 +137,7 @@ const TransitionPlane = ({ trigger, color = "#f5ebd7" }) => {
 
     tl.to(material.uniforms.uProgress, {
       value: 1,
-      duration: 1.5,
+      duration: 2.5,
       ease: "power2.inOut",
     })
       .to(material.uniforms.uProgress, {
@@ -146,7 +146,7 @@ const TransitionPlane = ({ trigger, color = "#f5ebd7" }) => {
       })
       .to(material.uniforms.uProgress, {
         value: 0,
-        duration: 1.5,
+        duration: 2.5,
         ease: "power2.inOut",
         onComplete: () => {
           material.uniforms.uProgress.value = 0;
