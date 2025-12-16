@@ -91,8 +91,10 @@ const LoadingPage = ({ onLoadComplete }) => {
 const IntroScreen = ({ onEnter }) => (
   <div className="flex items-center justify-center h-screen relative z-20">
     <div className="text-center">
-      <h1 className="text-7xl font-bold mb-6">Welcome</h1>
-      <p className="text-2xl mb-12">당신의 여정을 시작하세요</p>
+      <h1 className="text-5xl font-bold mb-6 font-map">
+        I solemnly swear that I am up to no good
+      </h1>
+
       <button
         onClick={onEnter}
         className="px-8 py-4 text-xl font-semibold bg-[#372116] text-[#f5ebd7] rounded-lg hover:bg-[#4a2c1f] transition-colors duration-300"

@@ -4,6 +4,11 @@
 }
 
 @font-face {
+  font-family: Map;
+  src: url("/fonts/Map.ttf");
+}
+
+@font-face {
   font-family: Loading;
   src: url("/fonts/Loading.ttf");
 }
@@ -24,6 +29,7 @@
   --font-main: Main, "sans-serif";
   --font-loading: Loading, "sans-serif";
   --font-header: Header, "sans-serif";
+  --font-map: Map, "sans-serif";
 }
 
 .marauder-footprint {
