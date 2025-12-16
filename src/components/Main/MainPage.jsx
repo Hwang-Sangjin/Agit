@@ -7,6 +7,11 @@ import FiberContainer from "./FiberContainer";
 import StaticPaperBackground from "./StaticPaperBackground";
 import Header from "../Header";
 
+import IntroScreen from "./IntroScreen";
+import MainContent from "./MainContent";
+import AboutContent from "./AboutContent";
+import ContactContent from "./ContactContent";
+
 // 발자국 SVG 컴포넌트
 const Footprint = ({ isLeft, angle = 0, className = "" }) => {
   const footRotation = isLeft ? -5 : 5;
@@ -87,51 +92,7 @@ const LoadingPage = ({ onLoadComplete }) => {
   );
 };
 
-// 인트로 화면 컴포넌트
-const IntroScreen = ({ onEnter }) => (
-  <div className="flex items-center justify-center h-screen relative z-20">
-    <div className="text-center">
-      <h1 className="text-5xl font-bold mb-6 font-map">
-        I solemnly swear that I am up to no good
-      </h1>
-
-      <button
-        onClick={onEnter}
-        className="px-8 py-4 text-xl font-semibold bg-[#372116] text-[#f5ebd7] rounded-lg hover:bg-[#4a2c1f] transition-colors duration-300"
-      >
-        Enter
-      </button>
-    </div>
-  </div>
-);
-
 // 데모용 페이지 컴포넌트들
-const MainContent = () => (
-  <div className="flex items-center justify-center h-full">
-    <div className="text-center">
-      <h1 className="text-6xl font-bold mb-4">Main</h1>
-      <p className="text-xl">메인 페이지입니다</p>
-    </div>
-  </div>
-);
-
-const AboutContent = () => (
-  <div className="flex items-center justify-center h-full">
-    <div className="text-center">
-      <h1 className="text-6xl font-bold mb-4">About</h1>
-      <p className="text-xl">소개 페이지입니다</p>
-    </div>
-  </div>
-);
-
-const ContactContent = () => (
-  <div className="flex items-center justify-center h-full">
-    <div className="text-center">
-      <h1 className="text-6xl font-bold mb-4">Contact</h1>
-      <p className="text-xl">연락처 페이지입니다</p>
-    </div>
-  </div>
-);
 
 function MainPage() {
   // 화면 상태 관리
