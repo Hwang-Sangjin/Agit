@@ -12,6 +12,10 @@ import MainContent from "./MainContent";
 import AboutContent from "./AboutContent";
 import ContactContent from "./ContactContent";
 
+import NameTag from "../Cursor/NameTag";
+
+import { useNameState } from "../../store/nameState";
+
 // 발자국 SVG 컴포넌트
 const Footprint = ({ isLeft, angle = 0, className = "" }) => {
   const footRotation = isLeft ? -5 : 5;
@@ -112,6 +116,8 @@ function MainPage() {
   const [currentSection, setCurrentSection] = useState("#main");
   const isTransitioningRef = useRef(false);
 
+  const name = useNameState((state) => state.name);
+
   const FOOTPRINT_DISTANCE = 60;
 
   // 로딩 완료 핸들러 - 인트로 화면으로 이동
@@ -185,6 +191,10 @@ function MainPage() {
       window.removeEventListener("hashchange", handleHashChange);
     };
   }, [currentSection, currentScreen]);
+
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
 
   // 마우스 커서 추적 - 모든 화면에서 작동
   useEffect(() => {
@@ -295,7 +305,7 @@ function MainPage() {
           </div>
         ))}
 
-      {/* Current cursor - 항상 표시 */}
+      {/* Current cursor with NameTag - 항상 표시 */}
       {!trigger && (
         <div
           className="fixed pointer-events-none z-60"
@@ -305,6 +315,21 @@ function MainPage() {
             transform: "translate(-50%, -50%)",
           }}
         >
+          {/* NameTag 표시 */}
+          {name && (
+            <div
+              className="absolute"
+              style={{
+                left: "50%",
+                top: "-80px", // 발자국 위쪽에 위치
+                transform: "translateX(-50%)",
+              }}
+            >
+              <NameTag name={name} />
+            </div>
+          )}
+
+          {/* 발자국 커서 */}
           <Footprint
             isLeft={isLeftFootRef.current}
             angle={currentAngle}
@@ -312,7 +337,6 @@ function MainPage() {
           />
         </div>
       )}
-
       {/* Page Content */}
       {currentScreen === "loading" && (
         <LoadingPage onLoadComplete={handleLoadComplete} />

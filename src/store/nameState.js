@@ -2,5 +2,5 @@ import { create } from "zustand";
 
 export const useNameState = create((set) => ({
   name: "",
-  setIsLoading: (value) => set({ name: value }),
+  setName: (value) => set({ name: value }),
 }));

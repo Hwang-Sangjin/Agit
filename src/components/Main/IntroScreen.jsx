@@ -1,10 +1,12 @@
 import { useState } from "react";
-
+import { useNameState } from "../../store/nameState";
 // 인트로 화면 컴포넌트
 const IntroScreen = ({ onEnter }) => {
   const [inputValue, setInputValue] = useState("");
+  const setName = useNameState((state) => state.setName);
 
   const handleSubmit = () => {
+    setName(inputValue); // Zustand store에 저장
     onEnter(inputValue);
   };
 
