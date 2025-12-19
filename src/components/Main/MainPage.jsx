@@ -96,6 +96,8 @@ const LoadingPage = ({ onLoadComplete }) => {
   );
 };
 
+// 데모용 페이지 컴포넌트들
+
 function MainPage() {
   // 화면 상태 관리
   const [currentScreen, setCurrentScreen] = useState("loading"); // "loading", "intro", "main"
@@ -157,7 +159,7 @@ function MainPage() {
     }
   };
 
-  // 해시 변경 감지 (메인 페이지에서만)
+  // 섹션 변경 감지 및 트랜지션 처리
   useEffect(() => {
     if (currentScreen !== "main") return;
 
@@ -171,12 +173,22 @@ function MainPage() {
       if (newHash === currentSection) return;
 
       isTransitioningRef.current = true;
-      setTrigger(true);
 
+      // 1. 먼저 섹션 변경
+      setCurrentSection(newHash);
+
+      // 2. 섹션 변경 후 트랜지션 시작
       setTimeout(() => {
-        setCurrentSection(newHash);
-      }, 1500);
+        setTrigger(true);
+      }, 0);
 
+      // 3. 2.5초 후 currentScreen 변경 (필요한 경우)
+      setTimeout(() => {
+        // 여기서 currentScreen 변경 로직을 추가할 수 있습니다
+        // 예: if (newHash === "#someSpecialSection") setCurrentScreen("other");
+      }, 2500);
+
+      // 4. 트랜지션 종료
       setTimeout(() => {
         setTrigger(false);
         isTransitioningRef.current = false;
@@ -189,10 +201,6 @@ function MainPage() {
       window.removeEventListener("hashchange", handleHashChange);
     };
   }, [currentSection, currentScreen]);
-
-  useEffect(() => {
-    console.log(name);
-  }, [name]);
 
   // 마우스 커서 추적 - 모든 화면에서 작동
   useEffect(() => {
