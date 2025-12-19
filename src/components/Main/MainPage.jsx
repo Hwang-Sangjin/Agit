@@ -96,8 +96,6 @@ const LoadingPage = ({ onLoadComplete }) => {
   );
 };
 
-// 데모용 페이지 컴포넌트들
-
 function MainPage() {
   // 화면 상태 관리
   const [currentScreen, setCurrentScreen] = useState("loading"); // "loading", "intro", "main"
