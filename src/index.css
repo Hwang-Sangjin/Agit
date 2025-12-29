@@ -17,6 +17,11 @@
   src: url("/fonts/Header.ttf");
 }
 
+@font-face {
+  font-family: Penta;
+  src: url("/fonts/Penta.ttf");
+}
+
 @import "tailwindcss";
 
 @theme {
@@ -30,6 +35,7 @@
   --font-loading: Loading, "sans-serif";
   --font-header: Header, "sans-serif";
   --font-map: Map, "sans-serif";
+  --font-penta: Penta, "sans-serif";
 }
 
 .marauder-footprint {

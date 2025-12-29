@@ -1,7 +1,19 @@
+import { useEffect, useState } from "react";
 import { useNameState } from "../../store/nameState";
 
 const NameTag = () => {
   const name = useNameState((state) => state.name);
+  const [capitalizedName, setCapitalizedName] = useState("");
+
+  useEffect(() => {
+    if (name) {
+      const capitalized = name
+        .split(" ")
+        .map((word) => word[0].toUpperCase() + word.slice(1))
+        .join(" ");
+      setCapitalizedName(capitalized);
+    }
+  }, [name]);
 
   return (
     <div className="relative w-60 h-30 top-30">
@@ -16,7 +28,9 @@ const NameTag = () => {
         className="absolute inset-0 flex items-center justify-center"
         style={{ top: "-20px" }}
       >
-        <span className="text-[#372116] font-map text-m">{name}</span>
+        <span className="text-[#372116] font-penta text-m">
+          {capitalizedName}
+        </span>
       </div>
     </div>
   );

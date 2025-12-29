@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { useProgress } from "@react-three/drei";
+import { OrbitControls, useProgress } from "@react-three/drei";
 
 import TransitionOverlay from "../TransitionOverlay";
 import FiberContainer from "./FiberContainer";
@@ -15,6 +15,8 @@ import ContactContent from "./ContactContent";
 import NameTag from "../Cursor/NameTag";
 
 import { useNameState } from "../../store/nameState";
+
+import BackgroundCanvas from "../3DModel/BackgroundCanvas";
 
 // 발자국 SVG 컴포넌트
 const Footprint = ({ isLeft, angle = 0, className = "" }) => {
@@ -153,7 +155,12 @@ function MainPage() {
         return <ContactContent />;
       case "#main":
       default:
-        return <MainContent />;
+        return (
+          <div className="">
+            <BackgroundCanvas />
+            <MainContent />
+          </div>
+        );
     }
   };
 
